@@ -5,6 +5,7 @@ import AdminSidebar from './AdminSidebar';
 import AdminOverview from './AdminOverview';
 import UserManagement from './UserManagement';
 import RequestManagement from './RequestManagement';
+import ChatBot from '../shared/ChatBot';
 import { Loader2 } from 'lucide-react';
 
 const AdminDashboard: React.FC = () => {
@@ -64,6 +65,7 @@ const AdminDashboard: React.FC = () => {
           {renderContent()}
         </div>
       </main>
+      <ChatBot />
     </div>
   );
 };

@@ -5,6 +5,7 @@ import TeacherSidebar from './TeacherSidebar';
 import TeacherOverview from './TeacherOverview';
 import AssignmentManagement from './AssignmentManagement';
 import GradingSection from './GradingSection';
+import ChatBot from '../shared/ChatBot';
 import { Loader2 } from 'lucide-react';
 
 const TeacherDashboard: React.FC = () => {
@@ -67,6 +68,7 @@ const TeacherDashboard: React.FC = () => {
           {renderContent()}
         </div>
       </main>
+      <ChatBot />
     </div>
   );
 };
