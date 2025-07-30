@@ -1,0 +1,71 @@
+import React, { useState, useEffect } from 'react';
+import { fetchAllUsers, fetchAllRequests, UserAccount, Request } from '../../services/api';
+import { useAuth } from '../../contexts/AuthContext';
+import AdminSidebar from './AdminSidebar';
+import AdminOverview from './AdminOverview';
+import UserManagement from './UserManagement';
+import RequestManagement from './RequestManagement';
+import { Loader2 } from 'lucide-react';
+
+const AdminDashboard: React.FC = () => {
+  const { token } = useAuth();
+  const [users, setUsers] = useState<UserAccount[]>([]);
+  const [requests, setRequests] = useState<Request[]>([]);
+  const [activeSection, setActiveSection] = useState('dashboard');
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadData = async () => {
+      if (token) {
+        setIsLoading(true);
+        try {
+          const [usersData, requestsData] = await Promise.all([
+            fetchAllUsers(token),
+            fetchAllRequests(token)
+          ]);
+          setUsers(usersData);
+          setRequests(requestsData);
+        } catch (error) {
+          console.error('Erreur lors du chargement des données:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+    loadData();
+  }, [token]);
+
+  const renderContent = () => {
+    if (isLoading) {
+      return (
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
+        </div>
+      );
+    }
+
+    switch (activeSection) {
+      case 'dashboard':
+        return <AdminOverview users={users} requests={requests} />;
+      case 'users':
+        return <UserManagement users={users} setUsers={setUsers} />;
+      case 'requests':
+        return <RequestManagement requests={requests} setRequests={setRequests} />;
+      default:
+        return <AdminOverview users={users} requests={requests} />;
+    }
+  };
+
+  return (
+    <div className="flex h-screen bg-gray-50">
+      <AdminSidebar activeSection={activeSection} setActiveSection={setActiveSection} />
+      <main className="flex-1 overflow-y-auto">
+        <div className="p-8">
+          {renderContent()}
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default AdminDashboard;
