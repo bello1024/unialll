@@ -6,7 +6,6 @@ import DashboardOverview from './DashboardOverview';
 import NotesSection from './NotesSection';
 import ScheduleSection from './ScheduleSection';
 import AssignmentsSection from './student/AssignmentsSection';
-import RequestsSection from './student/RequestsSection';
 import NotificationsSection from './student/NotificationsSection';
 import LibrarySection from './student/LibrarySection';
 import CertificationsSection from './student/CertificationsSection';
