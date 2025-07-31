@@ -58,6 +58,10 @@ const ChatBot: React.FC = () => {
       return 'Vous pouvez discuter avec vos camarades de classe dans la section "Notifications" qui contient le chat de groupe de votre promotion.';
     }
     
+    if (message.includes('demande') || message.includes('contact') || message.includes('enseignant') || message.includes('administration')) {
+      return 'Pour contacter l\'administration ou signaler un problème, utilisez la section "Mes Demandes". Vous pouvez y soumettre différents types de demandes : erreurs de notes, conflits d\'emploi du temps, problèmes techniques, etc.';
+    }
+    
     if (message.includes('aide') || message.includes('help')) {
       return 'Je peux vous aider avec : consulter vos notes, voir votre emploi du temps, gérer vos devoirs, accéder aux certifications, utiliser la bibliothèque, et bien plus !';
     }

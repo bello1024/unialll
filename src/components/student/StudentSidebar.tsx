@@ -19,6 +19,7 @@ const StudentSidebar: React.FC<StudentSidebarProps> = ({ activeSection, setActiv
     { id: 'library', label: 'Bibliothèque', icon: Library },
     { id: 'certifications', label: 'Certifications', icon: Award },
     { id: 'requests', label: 'Mes Demandes', icon: MessageSquare },
+    { id: 'requests', label: 'Mes Demandes', icon: MessageSquare },
     { id: 'stats', label: 'Statistiques', icon: BarChart3 },
     { id: 'profile', label: 'Profil', icon: User },
     { id: 'settings', label: 'Paramètres', icon: Settings },

@@ -10,6 +10,7 @@ import RequestsSection from './student/RequestsSection';
 import NotificationsSection from './student/NotificationsSection';
 import LibrarySection from './student/LibrarySection';
 import CertificationsSection from './student/CertificationsSection';
+import RequestsSection from './student/RequestsSection';
 import ChatBot from './shared/ChatBot';
 import { Loader2 } from 'lucide-react';
 
@@ -67,6 +68,8 @@ const StudentDashboard: React.FC = () => {
         return <LibrarySection />;
       case 'certifications':
         return <CertificationsSection />;
+      case 'requests':
+        return <RequestsSection />;
       case 'stats':
         return (
           <div className="text-center py-16">
