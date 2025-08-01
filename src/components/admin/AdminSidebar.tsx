@@ -1,13 +1,15 @@
 import React from 'react';
-import { Home, Users, MessageSquare, BarChart3, Settings, LogOut, Shield } from 'lucide-react';
+import { Home, Users, MessageSquare, BarChart3, Settings, LogOut, Shield, X } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
 interface AdminSidebarProps {
   activeSection: string;
   setActiveSection: (section: string) => void;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeSection, setActiveSection }) => {
+const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeSection, setActiveSection, isOpen, onClose }) => {
   const { user, logout } = useAuth();
 
   const menuItems = [
@@ -19,9 +21,31 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeSection, setActiveSec
   ];
 
   return (
-    <div className="bg-white h-screen w-64 shadow-lg flex flex-col">
+    <>
+      {/* Overlay pour mobile */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={onClose}
+        />
+      )}
+      
+      {/* Sidebar */}
+      <div className={`bg-white h-screen w-64 shadow-lg flex flex-col fixed lg:relative z-50 transform transition-transform duration-300 ease-in-out ${
+        isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      }`}>
+        {/* Bouton fermer pour mobile */}
+        <div className="lg:hidden flex justify-end p-4">
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-lg"
+          >
+            <X className="h-5 w-5 text-gray-600" />
+          </button>
+        </div>
+
       {/* Header avec profil utilisateur */}
-      <div className="p-6 border-b border-gray-200">
+        <div className="p-6 border-b border-gray-200">
         <div className="flex items-center space-x-3">
           <img
             src={user?.avatar || 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=2'}
@@ -39,14 +63,19 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeSection, setActiveSec
       </div>
 
       {/* Menu de navigation */}
-      <nav className="flex-1 px-4 py-6">
+        <nav className="flex-1 px-4 py-6">
         <ul className="space-y-2">
           {menuItems.map((item) => {
             const Icon = item.icon;
             return (
               <li key={item.id}>
                 <button
-                  onClick={() => setActiveSection(item.id)}
+                  onClick={() => {
+                    setActiveSection(item.id);
+                    if (window.innerWidth < 1024) {
+                      onClose();
+                    }
+                  }}
                   className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
                     activeSection === item.id
                       ? 'bg-purple-50 text-purple-700 border-r-2 border-purple-700'
@@ -63,7 +92,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeSection, setActiveSec
       </nav>
 
       {/* Bouton de déconnexion */}
-      <div className="p-4 border-t border-gray-200">
+        <div className="p-4 border-t border-gray-200">
         <button
           onClick={logout}
           className="w-full flex items-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200"
@@ -72,7 +101,8 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeSection, setActiveSec
           <span className="font-medium">Se déconnecter</span>
         </button>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 
