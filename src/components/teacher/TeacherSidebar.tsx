@@ -34,9 +34,9 @@ const TeacherSidebar: React.FC<TeacherSidebarProps> = ({ activeSection, setActiv
       {/* Sidebar */}
       <div className={`bg-white h-screen w-64 shadow-lg flex flex-col fixed lg:relative z-50 transform transition-transform duration-300 ease-in-out ${
         isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-      }`}>
+      } overflow-y-auto`}>
         {/* Bouton fermer pour mobile */}
-        <div className="lg:hidden flex justify-end p-4">
+        <div className="lg:hidden flex justify-end p-4 flex-shrink-0">
           <button
             onClick={onClose}
             className="p-2 hover:bg-gray-100 rounded-lg"
@@ -46,7 +46,7 @@ const TeacherSidebar: React.FC<TeacherSidebarProps> = ({ activeSection, setActiv
         </div>
 
       {/* Header avec profil utilisateur */}
-        <div className="p-6 border-b border-gray-200">
+        <div className="p-6 border-b border-gray-200 flex-shrink-0">
         <div className="flex items-center space-x-3">
           <img
             src={user?.avatar || 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=2'}
@@ -61,7 +61,7 @@ const TeacherSidebar: React.FC<TeacherSidebarProps> = ({ activeSection, setActiv
       </div>
 
       {/* Menu de navigation */}
-        <nav className="flex-1 px-4 py-6">
+        <nav className="flex-1 px-4 py-6 overflow-y-auto">
         <ul className="space-y-2">
           {menuItems.map((item) => {
             const Icon = item.icon;
@@ -90,7 +90,7 @@ const TeacherSidebar: React.FC<TeacherSidebarProps> = ({ activeSection, setActiv
       </nav>
 
       {/* Bouton de déconnexion */}
-        <div className="p-4 border-t border-gray-200">
+        <div className="p-4 border-t border-gray-200 flex-shrink-0">
         <button
           onClick={logout}
           className="w-full flex items-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200"
