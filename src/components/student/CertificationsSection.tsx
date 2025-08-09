@@ -1,99 +1,57 @@
 import React, { useState } from 'react';
 import { Award, Clock, Users, BookOpen, Play, CheckCircle, Star } from 'lucide-react';
-
-interface Certification {
-  id: string;
-  title: string;
-  description: string;
-  instructor: string;
-  duration: string;
-  level: 'débutant' | 'intermédiaire' | 'avancé';
-  category: string;
-  enrolled: number;
-  rating: number;
-  progress?: number;
-  isEnrolled?: boolean;
-  completedLessons?: number;
-  totalLessons?: number;
-  certificate?: boolean;
-}
+import { fetchCertifications, fetchStudentCertificationEnrollments, enrollInCertification } from '../../services/supabaseApi';
+import type { Certification, CertificationEnrollment } from '../../lib/supabase';
+import { useAuth } from '../../contexts/AuthContext';
 
 const CertificationsSection: React.FC = () => {
+  const { user } = useAuth();
+  const [certifications, setCertifications] = useState<Certification[]>([]);
+  const [enrollments, setEnrollments] = useState<CertificationEnrollment[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'web' | 'data' | 'mobile' | 'security'>('all');
   const [selectedLevel, setSelectedLevel] = useState<'all' | 'débutant' | 'intermédiaire' | 'avancé'>('all');
 
-  const certifications: Certification[] = [
-    {
-      id: '1',
-      title: 'Développement Web Full Stack',
-      description: 'Maîtrisez React, Node.js, et les bases de données pour devenir développeur full stack',
-      instructor: 'Prof. Martin Dubois',
-      duration: '40h',
-      level: 'intermédiaire',
-      category: 'web',
-      enrolled: 156,
-      rating: 4.8,
-      progress: 65,
-      isEnrolled: true,
-      completedLessons: 13,
-      totalLessons: 20
-    },
-    {
-      id: '2',
-      title: 'Science des Données avec Python',
-      description: 'Apprenez l\'analyse de données, machine learning et visualisation avec Python',
-      instructor: 'Dr. Sophie Laurent',
-      duration: '35h',
-      level: 'avancé',
-      category: 'data',
-      enrolled: 89,
-      rating: 4.9,
-      progress: 100,
-      isEnrolled: true,
-      completedLessons: 15,
-      totalLessons: 15,
-      certificate: true
-    },
-    {
-      id: '3',
-      title: 'Développement Mobile avec React Native',
-      description: 'Créez des applications mobiles cross-platform avec React Native',
-      instructor: 'Prof. Pierre Leroy',
-      duration: '30h',
-      level: 'intermédiaire',
-      category: 'mobile',
-      enrolled: 124,
-      rating: 4.6
-    },
-    {
-      id: '4',
-      title: 'Cybersécurité et Ethical Hacking',
-      description: 'Découvrez les techniques de sécurité informatique et de test de pénétration',
-      instructor: 'Dr. Thomas Bernard',
-      duration: '45h',
-      level: 'avancé',
-      category: 'security',
-      enrolled: 67,
-      rating: 4.7
-    },
-    {
-      id: '5',
-      title: 'Introduction à l\'Intelligence Artificielle',
-      description: 'Bases de l\'IA, réseaux de neurones et applications pratiques',
-      instructor: 'Prof. Marie Rousseau',
-      duration: '25h',
-      level: 'débutant',
-      category: 'data',
-      enrolled: 203,
-      rating: 4.5
-    }
-  ];
+  // Charger les certifications et inscriptions
+  React.useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [certsData, enrollmentsData] = await Promise.all([
+          fetchCertifications(),
+          user ? fetchStudentCertificationEnrollments(user.id) : Promise.resolve([])
+        ]);
+        setCertifications(certsData);
+        setEnrollments(enrollmentsData);
+      } catch (error) {
+        console.error('Error loading certifications:', error);
+      }
+    };
+    loadData();
+  }, [user]);
 
   const filteredCertifications = certifications.filter(cert => {
     const matchesCategory = selectedCategory === 'all' || cert.category === selectedCategory;
     const matchesLevel = selectedLevel === 'all' || cert.level === selectedLevel;
     return matchesCategory && matchesLevel;
   });
+
+  const isEnrolled = (certId: string) => {
+    return enrollments.some(e => e.certification_id === certId);
+  };
+
+  const getEnrollment = (certId: string) => {
+    return enrollments.find(e => e.certification_id === certId);
+  };
+
+  const handleEnroll = async (certificationId: string) => {
+    if (!user) return;
+    
+    try {
+      const enrollment = await enrollInCertification(user.id, certificationId);
+      setEnrollments(prev => [...prev, enrollment]);
+    } catch (error) {
+      console.error('Error enrolling:', error);
+    }
+  };
 
   const getLevelColor = (level: string) => {
     switch (level) {
@@ -143,11 +101,11 @@ const CertificationsSection: React.FC = () => {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">Mes Certifications</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {certifications.filter(cert => cert.isEnrolled).map((cert) => (
-            <div key={cert.id} className="border border-gray-200 rounded-lg p-4">
+          {enrollments.map((enrollment) => (
+            <div key={enrollment.id} className="border border-gray-200 rounded-lg p-4">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="font-medium text-gray-900">{cert.title}</h3>
-                {cert.certificate && (
+                <h3 className="font-medium text-gray-900">{enrollment.certification?.title}</h3>
+                {enrollment.certificate_earned && (
                   <Award className="h-5 w-5 text-yellow-500" />
                 )}
               </div>
@@ -155,19 +113,19 @@ const CertificationsSection: React.FC = () => {
               <div className="mb-3">
                 <div className="flex items-center justify-between text-sm text-gray-600 mb-1">
                   <span>Progression</span>
-                  <span>{cert.progress}%</span>
+                  <span>{enrollment.progress}%</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div
                     className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${cert.progress}%` }}
+                    style={{ width: `${enrollment.progress}%` }}
                   />
                 </div>
               </div>
               
               <div className="flex items-center justify-between text-sm text-gray-600">
-                <span>{cert.completedLessons}/{cert.totalLessons} leçons</span>
-                {cert.certificate ? (
+                <span>{enrollment.completed_lessons}/{enrollment.certification?.total_lessons} leçons</span>
+                {enrollment.certificate_earned ? (
                   <span className="text-green-600 font-medium">Certificat obtenu</span>
                 ) : (
                   <button className="text-blue-600 hover:text-blue-700 font-medium">
@@ -223,7 +181,7 @@ const CertificationsSection: React.FC = () => {
                 <div className="text-2xl">{getCategoryIcon(cert.category)}</div>
                 <div>
                   <h3 className="font-semibold text-gray-900">{cert.title}</h3>
-                  <p className="text-sm text-gray-600">Par {cert.instructor}</p>
+                  <p className="text-sm text-gray-600">Par {cert.instructor?.full_name}</p>
                 </div>
               </div>
               <span className={`px-2 py-1 rounded text-xs font-medium ${getLevelColor(cert.level)}`}>
@@ -240,7 +198,7 @@ const CertificationsSection: React.FC = () => {
               </div>
               <div className="flex items-center">
                 <Users className="h-4 w-4 mr-1" />
-                {cert.enrolled} inscrits
+                {cert.enrolled_count} inscrits
               </div>
               <div className="flex items-center space-x-1">
                 {renderStars(cert.rating)}
@@ -249,19 +207,22 @@ const CertificationsSection: React.FC = () => {
             </div>
             
             <div className="flex items-center justify-between">
-              {cert.isEnrolled ? (
+              {isEnrolled(cert.id) ? (
                 <button className="bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors flex items-center">
                   <Play className="h-4 w-4 mr-2" />
                   Continuer
                 </button>
               ) : (
-                <button className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center">
+                <button 
+                  onClick={() => handleEnroll(cert.id)}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center"
+                >
                   <BookOpen className="h-4 w-4 mr-2" />
                   S'inscrire
                 </button>
               )}
               
-              {cert.certificate && (
+              {getEnrollment(cert.id)?.certificate_earned && (
                 <div className="flex items-center text-yellow-600">
                   <Award className="h-4 w-4 mr-1" />
                   <span className="text-sm font-medium">Certificat</span>
