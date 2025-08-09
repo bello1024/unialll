@@ -1,21 +1,13 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
-import { Assignment } from '../services/api';
+import { supabase } from '../lib/supabase';
+import { getCurrentUser, signIn as supabaseSignIn, signOut as supabaseSignOut } from '../services/supabaseApi';
+import type { Profile } from '../lib/supabase';
 
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: 'student' | 'teacher' | 'admin';
-  promotion?: string; // Pour les étudiants
-  department?: string; // Pour les enseignants
-  avatar?: string;
-}
+export type User = Profile;
 
 interface AuthContextType {
   user: User | null;
-  token: string | null;
-  assignments: Assignment[];
-  setAssignments: React.Dispatch<React.SetStateAction<Assignment[]>>;
+  loading: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
   isAuthenticated: boolean;
@@ -37,59 +29,65 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
-  const [assignments, setAssignments] = useState<Assignment[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
-    // Simulation de l'authentification avec différents types d'utilisateurs
-    const users = {
-      'student@example.com': {
-        id: '1',
-        name: 'Djeukeng Kana',
-        email: 'student@example.com',
-        role: 'student' as const,
-        promotion: 'L3 RT',
-        avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&dpr=2'
-      },
-      'teacher@example.com': {
-        id: '2',
-        name: 'Prof. Martin Dubois',
-        email: 'teacher@example.com',
-        role: 'teacher' as const,
-        department: 'Informatique',
-        avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&dpr=2'
-      },
-      'admin@example.com': {
-        id: '3',
-        name: 'Admin Système',
-        email: 'admin@example.com',
-        role: 'admin' as const,
-        avatar: 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&dpr=2'
+  // Vérifier l'état d'authentification au chargement
+  React.useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const currentUser = await getCurrentUser();
+        setUser(currentUser);
+      } catch (error) {
+        console.error('Error checking auth:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    if (password === 'password' && users[email as keyof typeof users]) {
-      setUser(users[email as keyof typeof users]);
-      setToken('mock-token-123');
+    checkAuth();
+
+    // Écouter les changements d'authentification
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        const currentUser = await getCurrentUser();
+        setUser(currentUser);
+      } else if (event === 'SIGNED_OUT') {
+        setUser(null);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const login = async (email: string, password: string): Promise<boolean> => {
+    try {
+      const { error } = await supabaseSignIn(email, password);
+      if (error) {
+        console.error('Login error:', error);
+        return false;
+      }
       return true;
+    } catch (error) {
+      console.error('Login error:', error);
+      return false;
     }
-    return false;
   };
 
-  const logout = () => {
-    setUser(null);
-    setToken(null);
-    setAssignments([]);
+  const logout = async () => {
+    try {
+      await supabaseSignOut();
+      setUser(null);
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
 
   const value: AuthContextType = {
     user,
-    token,
-    assignments,
-    setAssignments,
+    loading,
     login,
     logout,
-    isAuthenticated: !!user && !!token,
+    isAuthenticated: !!user,
   };
 
   return (

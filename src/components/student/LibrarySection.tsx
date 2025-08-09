@@ -1,104 +1,39 @@
 import React, { useState } from 'react';
 import { Search, Download, FileText, Image, Video, Archive, Filter, Star, Eye } from 'lucide-react';
+import { fetchLibraryDocuments } from '../../services/supabaseApi';
+import type { LibraryDocument } from '../../lib/supabase';
 
-interface Document {
-  id: string;
-  title: string;
-  type: 'pdf' | 'doc' | 'image' | 'video' | 'archive';
-  category: 'rapport' | 'projet' | 'cours' | 'exercice';
-  author: string;
-  uploadDate: string;
-  size: string;
-  downloads: number;
-  rating: number;
-  description: string;
-  tags: string[];
-}
 
 const LibrarySection: React.FC = () => {
+  const [documents, setDocuments] = useState<LibraryDocument[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'rapport' | 'projet' | 'cours' | 'exercice'>('all');
   const [selectedType, setSelectedType] = useState<'all' | 'pdf' | 'doc' | 'image' | 'video' | 'archive'>('all');
 
-  const documents: Document[] = [
-    {
-      id: '1',
-      title: 'Rapport de Stage - Développement Web',
-      type: 'pdf',
-      category: 'rapport',
-      author: 'Marie Dubois',
-      uploadDate: '2024-01-15',
-      size: '2.5 MB',
-      downloads: 45,
-      rating: 4.8,
-      description: 'Rapport de stage de 6 mois chez une startup tech, focus sur React et Node.js',
-      tags: ['stage', 'web', 'react', 'nodejs']
-    },
-    {
-      id: '2',
-      title: 'Projet Base de Données - Système de Gestion',
-      type: 'archive',
-      category: 'projet',
-      author: 'Pierre Martin',
-      uploadDate: '2024-01-10',
-      size: '15.2 MB',
-      downloads: 32,
-      rating: 4.5,
-      description: 'Projet complet avec code source, documentation et base de données',
-      tags: ['bdd', 'mysql', 'php', 'projet']
-    },
-    {
-      id: '3',
-      title: 'Cours Algorithmique Avancée',
-      type: 'pdf',
-      category: 'cours',
-      author: 'Prof. Martin',
-      uploadDate: '2024-01-20',
-      size: '8.7 MB',
-      downloads: 128,
-      rating: 4.9,
-      description: 'Support de cours complet avec exercices corrigés',
-      tags: ['algorithmique', 'cours', 'exercices']
-    },
-    {
-      id: '4',
-      title: 'Présentation Intelligence Artificielle',
-      type: 'pdf',
-      category: 'cours',
-      author: 'Sophie Laurent',
-      uploadDate: '2024-01-18',
-      size: '12.1 MB',
-      downloads: 67,
-      rating: 4.6,
-      description: 'Présentation sur les réseaux de neurones et machine learning',
-      tags: ['ia', 'ml', 'présentation']
-    },
-    {
-      id: '5',
-      title: 'Exercices Corrigés - Programmation C++',
-      type: 'doc',
-      category: 'exercice',
-      author: 'Thomas Leroy',
-      uploadDate: '2024-01-12',
-      size: '1.8 MB',
-      downloads: 89,
-      rating: 4.7,
-      description: 'Collection d\'exercices avec solutions détaillées',
-      tags: ['cpp', 'exercices', 'programmation']
-    }
-  ];
+  // Charger les documents au montage
+  React.useEffect(() => {
+    const loadDocuments = async () => {
+      try {
+        const data = await fetchLibraryDocuments();
+        setDocuments(data);
+      } catch (error) {
+        console.error('Error loading documents:', error);
+      }
+    };
+    loadDocuments();
+  }, []);
 
   const filteredDocuments = documents.filter(doc => {
     const matchesSearch = doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         doc.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         doc.author?.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          doc.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesCategory = selectedCategory === 'all' || doc.category === selectedCategory;
-    const matchesType = selectedType === 'all' || doc.type === selectedType;
+    const matchesType = selectedType === 'all' || doc.file_type === selectedType;
     return matchesSearch && matchesCategory && matchesType;
   });
 
-  const getFileIcon = (type: string) => {
-    switch (type) {
+  const getFileIcon = (file_type: string) => {
+    switch (file_type) {
       case 'pdf':
       case 'doc':
         return FileText;
@@ -211,12 +146,12 @@ const LibrarySection: React.FC = () => {
                     </span>
                   </div>
                   
-                  <p className="text-sm text-gray-600 mb-3">{doc.description}</p>
+                  <p className="text-sm text-gray-600 mb-3">{doc.description || 'Aucune description'}</p>
                   
                   <div className="flex items-center space-x-4 text-xs text-gray-500 mb-3">
-                    <span>Par {doc.author}</span>
-                    <span>{new Date(doc.uploadDate).toLocaleDateString('fr-FR')}</span>
-                    <span>{doc.size}</span>
+                    <span>Par {doc.author?.full_name}</span>
+                    <span>{new Date(doc.created_at).toLocaleDateString('fr-FR')}</span>
+                    <span>{(doc.file_size / 1024 / 1024).toFixed(1)} MB</span>
                   </div>
                   
                   <div className="flex items-center justify-between">
@@ -241,7 +176,7 @@ const LibrarySection: React.FC = () => {
                     </div>
                   </div>
                   
-                  <div className="flex flex-wrap gap-1 mt-3">
+          const FileIcon = getFileIcon(doc.file_type);
                     {doc.tags.map((tag) => (
                       <span key={tag} className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
                         #{tag}

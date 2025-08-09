@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { FileText, Calendar, Clock, Upload, Send, CheckCircle, AlertCircle } from 'lucide-react';
-import { Assignment, fetchAssignments, submitAssignment } from '../../services/api';
+import { fetchAssignmentsByPromotion, submitAssignment } from '../../services/supabaseApi';
+import type { Assignment } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
 
 const AssignmentsSection: React.FC = () => {
-  const { user, token, assignments: globalAssignments } = useAuth();
+  const { user } = useAuth();
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
   const [files, setFiles] = useState<File[]>([]);
@@ -14,15 +15,17 @@ const AssignmentsSection: React.FC = () => {
 
   useEffect(() => {
     const loadAssignments = async () => {
-      if (user && token) {
-        const data = await fetchAssignments(user.promotion!, token);
-        // Combiner les devoirs de l'API avec ceux créés en temps réel
-        const allAssignments = [...data, ...globalAssignments.filter(a => a.promotion === user.promotion)];
-        setAssignments(allAssignments);
+      if (user && user.promotion) {
+        try {
+          const data = await fetchAssignmentsByPromotion(user.promotion);
+          setAssignments(data);
+        } catch (error) {
+          console.error('Error loading assignments:', error);
+        }
       }
     };
     loadAssignments();
-  }, [user, token, globalAssignments]);
+  }, [user]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -36,7 +39,7 @@ const AssignmentsSection: React.FC = () => {
 
     setIsSubmitting(true);
     try {
-      await submitAssignment(selectedAssignment.id, files, comments, token!);
+      await submitAssignment(selectedAssignment.id, user!.id, files, comments);
       setSubmitSuccess(true);
       setFiles([]);
       setComments('');
@@ -49,8 +52,8 @@ const AssignmentsSection: React.FC = () => {
     }
   };
 
-  const getDaysUntilDue = (dueDate: string) => {
-    const due = new Date(dueDate);
+  const getDaysUntilDue = (due_date: string) => {
+    const due = new Date(due_date);
     const now = new Date();
     const diffTime = due.getTime() - now.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -84,7 +87,7 @@ const AssignmentsSection: React.FC = () => {
           <h2 className="text-xl font-semibold text-gray-900">Devoirs Disponibles</h2>
           
           {assignments.map((assignment) => {
-            const daysLeft = getDaysUntilDue(assignment.dueDate);
+            const daysLeft = getDaysUntilDue(assignment.due_date);
             return (
               <div
                 key={assignment.id}
@@ -98,7 +101,7 @@ const AssignmentsSection: React.FC = () => {
                     <FileText className="h-6 w-6 text-blue-600" />
                     <div>
                       <h3 className="font-semibold text-gray-900">{assignment.title}</h3>
-                      <p className="text-sm text-gray-600">{assignment.course}</p>
+                      <p className="text-sm text-gray-600">{assignment.course?.name}</p>
                     </div>
                   </div>
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(daysLeft)}`}>
@@ -111,11 +114,11 @@ const AssignmentsSection: React.FC = () => {
                 <div className="flex items-center justify-between text-sm text-gray-500">
                   <div className="flex items-center">
                     <Calendar className="h-4 w-4 mr-1" />
-                    Échéance: {new Date(assignment.dueDate).toLocaleDateString('fr-FR')}
+                    Échéance: {new Date(assignment.due_date).toLocaleDateString('fr-FR')}
                   </div>
                   <div className="flex items-center">
                     <Clock className="h-4 w-4 mr-1" />
-                    {assignment.maxPoints} points
+                    {assignment.max_points} points
                   </div>
                 </div>
               </div>
@@ -132,10 +135,10 @@ const AssignmentsSection: React.FC = () => {
               <div className="bg-blue-50 p-4 rounded-lg">
                 <h3 className="font-medium text-blue-900">{selectedAssignment.title}</h3>
                 <p className="text-sm text-blue-700 mt-1">
-                  Enseignant: {selectedAssignment.teacherName}
+                  Enseignant: {selectedAssignment.teacher?.full_name}
                 </p>
                 <p className="text-sm text-blue-700">
-                  Échéance: {new Date(selectedAssignment.dueDate).toLocaleDateString('fr-FR')}
+                  Échéance: {new Date(selectedAssignment.due_date).toLocaleDateString('fr-FR')}
                 </p>
               </div>
 

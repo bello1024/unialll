@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Calendar, Clock, MapPin, User, ChevronLeft, ChevronRight } from 'lucide-react';
-import { ScheduleItem } from '../services/api';
+import type { ScheduleItem } from '../lib/supabase';
 
 interface ScheduleSectionProps {
   schedule: ScheduleItem[];
@@ -99,14 +99,14 @@ const ScheduleSection: React.FC<ScheduleSectionProps> = ({ schedule }) => {
                       key={item.id}
                       className={`p-3 rounded-lg text-white text-sm transition-all hover:shadow-md cursor-pointer ${getTypeColor(item.type)}`}
                     >
-                      <p className="font-medium">{item.cours}</p>
+                      <p className="font-medium">{item.course?.name}</p>
                       <div className="flex items-center mt-1 text-xs opacity-90">
                         <Clock className="h-3 w-3 mr-1" />
-                        {item.heureDebut}-{item.heureFin}
+                        {item.start_time}-{item.end_time}
                       </div>
                       <div className="flex items-center mt-1 text-xs opacity-90">
                         <MapPin className="h-3 w-3 mr-1" />
-                        {item.salle}
+                        {item.room}
                       </div>
                     </div>
                   ))}
@@ -131,11 +131,11 @@ const ScheduleSection: React.FC<ScheduleSectionProps> = ({ schedule }) => {
                   <div className={`w-4 h-16 rounded ${getTypeColor(item.type)}`} />
                   
                   <div>
-                    <h3 className="font-semibold text-gray-900 text-lg">{item.cours}</h3>
+                    <h3 className="font-semibold text-gray-900 text-lg">{item.course?.name}</h3>
                     <div className="flex items-center space-x-4 mt-2 text-sm text-gray-600">
                       <div className="flex items-center">
                         <User className="h-4 w-4 mr-1" />
-                        {item.professeur}
+                        {item.course?.teacher?.full_name}
                       </div>
                       <div className="flex items-center">
                         <Calendar className="h-4 w-4 mr-1" />
@@ -143,11 +143,11 @@ const ScheduleSection: React.FC<ScheduleSectionProps> = ({ schedule }) => {
                       </div>
                       <div className="flex items-center">
                         <Clock className="h-4 w-4 mr-1" />
-                        {item.heureDebut} - {item.heureFin}
+                        {item.start_time} - {item.end_time}
                       </div>
                       <div className="flex items-center">
                         <MapPin className="h-4 w-4 mr-1" />
-                        {item.salle}
+                        {item.room}
                       </div>
                     </div>
                   </div>

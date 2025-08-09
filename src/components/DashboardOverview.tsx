@@ -1,25 +1,25 @@
 import React from 'react';
 import { TrendingUp, BookOpen, Calendar, Trophy, Clock, Target } from 'lucide-react';
-import { Note, ScheduleItem } from '../services/api';
+import type { Grade, ScheduleItem } from '../lib/supabase';
 
 interface DashboardOverviewProps {
-  notes: Note[];
+  grades: Grade[];
   schedule: ScheduleItem[];
 }
 
-const DashboardOverview: React.FC<DashboardOverviewProps> = ({ notes, schedule }) => {
+const DashboardOverview: React.FC<DashboardOverviewProps> = ({ grades, schedule }) => {
   // Calculs des statistiques
   const calculateAverage = () => {
-    if (notes.length === 0) return 0;
-    const totalPoints = notes.reduce((sum, note) => sum + (note.valeur * note.coefficient), 0);
-    const totalCoefficients = notes.reduce((sum, note) => sum + note.coefficient, 0);
+    if (grades.length === 0) return 0;
+    const totalPoints = grades.reduce((sum, grade) => sum + (grade.value * grade.coefficient), 0);
+    const totalCoefficients = grades.reduce((sum, grade) => sum + grade.coefficient, 0);
     return totalPoints / totalCoefficients;
   };
 
   const average = calculateAverage();
   const todaySchedule = schedule.filter(item => {
     const today = new Date().toDateString();
-    const itemDate = new Date(item.date).toDateString();
+    const itemDate = new Date(item.date + 'T00:00:00').toDateString();
     return today === itemDate;
   });
 
@@ -34,7 +34,7 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({ notes, schedule }
     },
     {
       title: 'Matières',
-      value: new Set(notes.map(n => n.cours)).size.toString(),
+      value: new Set(grades.map(g => g.course?.name)).size.toString(),
       icon: BookOpen,
       color: 'bg-blue-500',
       textColor: 'text-blue-600',
@@ -100,14 +100,14 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({ notes, schedule }
             <TrendingUp className="h-5 w-5 text-green-500" />
           </div>
           <div className="space-y-3">
-            {notes.slice(0, 4).map((note) => (
-              <div key={note.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            {grades.slice(0, 4).map((grade) => (
+              <div key={grade.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                 <div>
-                  <p className="font-medium text-gray-900">{note.cours}</p>
-                  <p className="text-sm text-gray-500">Coeff. {note.coefficient}</p>
+                  <p className="font-medium text-gray-900">{grade.course?.name}</p>
+                  <p className="text-sm text-gray-500">Coeff. {grade.coefficient}</p>
                 </div>
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${getGradeColor(note.valeur)}`}>
-                  {note.valeur}/20
+                <span className={`px-3 py-1 rounded-full text-sm font-medium ${getGradeColor(grade.value)}`}>
+                  {grade.value}/20
                 </span>
               </div>
             ))}
@@ -125,9 +125,9 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({ notes, schedule }
               todaySchedule.map((item) => (
                 <div key={item.id} className="flex items-center p-3 bg-gray-50 rounded-lg">
                   <div className="flex-1">
-                    <p className="font-medium text-gray-900">{item.cours}</p>
+                    <p className="font-medium text-gray-900">{item.course?.name}</p>
                     <p className="text-sm text-gray-500">
-                      {item.heureDebut} - {item.heureFin} • {item.salle}
+                      {item.start_time} - {item.end_time} • {item.room}
                     </p>
                   </div>
                   <span className={`px-2 py-1 rounded text-xs font-medium ${

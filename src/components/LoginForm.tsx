@@ -51,7 +51,7 @@ const LoginForm: React.FC = () => {
     try {
       const success = await login(email, password);
       if (!success) {
-        setError('Email ou mot de passe incorrect');
+        setError('Email ou mot de passe incorrect. Utilisez les comptes de test avec le mot de passe "password"');
       }
     } catch (err) {
       setError('Une erreur est survenue lors de la connexion');
@@ -179,7 +179,7 @@ const LoginForm: React.FC = () => {
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Mot de passe pour tous les comptes: <span className="font-mono font-bold">password</span>
+              Comptes de test - Mot de passe: <span className="font-mono font-bold">password</span>
             </p>
           </div>
         </div>

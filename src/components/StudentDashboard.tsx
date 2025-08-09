@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { fetchNotes, fetchSchedule, Note, ScheduleItem } from '../services/api';
+import { fetchStudentGrades, fetchScheduleByPromotion } from '../services/supabaseApi';
+import type { Grade, ScheduleItem } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import StudentSidebar from './student/StudentSidebar';
 import DashboardOverview from './DashboardOverview';
@@ -14,8 +15,8 @@ import ChatBot from './shared/ChatBot';
 import { Loader2, Menu } from 'lucide-react';
 
 const StudentDashboard: React.FC = () => {
-  const { user, token } = useAuth();
-  const [notes, setNotes] = useState<Note[]>([]);
+  const { user, loading } = useAuth();
+  const [grades, setGrades] = useState<Grade[]>([]);
   const [schedule, setSchedule] = useState<ScheduleItem[]>([]);
   const [activeSection, setActiveSection] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -23,14 +24,14 @@ const StudentDashboard: React.FC = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      if (user && token) {
+      if (user && user.role === 'student') {
         setIsLoading(true);
         try {
-          const [notesData, scheduleData] = await Promise.all([
-            fetchNotes(user.id, token),
-            fetchSchedule(user.promotion, token)
+          const [gradesData, scheduleData] = await Promise.all([
+            fetchStudentGrades(user.id),
+            fetchScheduleByPromotion(user.promotion!)
           ]);
-          setNotes(notesData);
+          setGrades(gradesData);
           setSchedule(scheduleData);
         } catch (error) {
           console.error('Erreur lors du chargement des données:', error);
@@ -40,8 +41,15 @@ const StudentDashboard: React.FC = () => {
       }
     };
     loadData();
-  }, [user, token]);
+  }, [user]);
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+      </div>
+    );
+  }
   const renderContent = () => {
     if (isLoading) {
       return (
@@ -53,9 +61,9 @@ const StudentDashboard: React.FC = () => {
 
     switch (activeSection) {
       case 'dashboard':
-        return <DashboardOverview notes={notes} schedule={schedule} />;
+        return <DashboardOverview grades={grades} schedule={schedule} />;
       case 'notes':
-        return <NotesSection notes={notes} />;
+        return <NotesSection grades={grades} />;
       case 'schedule':
         return <ScheduleSection schedule={schedule} />;
       case 'assignments':
