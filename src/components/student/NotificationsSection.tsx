@@ -1,30 +1,50 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, Users, MessageCircle, Clock, Pin } from 'lucide-react';
-import { fetchChatMessages, sendChatMessage } from '../../services/supabaseApi';
-import type { ChatMessage } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
 
+interface Message {
+  id: string;
+  userId: string;
+  userName: string;
+  userAvatar: string;
+  content: string;
+  timestamp: string;
+  isPinned?: boolean;
+}
 
 const NotificationsSection: React.FC = () => {
   const { user } = useAuth();
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: '1',
+      userId: '2',
+      userName: 'Marie Dubois',
+      userAvatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=2',
+      content: 'Salut tout le monde ! Est-ce que quelqu\'un a les notes du cours d\'algorithmique d\'hier ?',
+      timestamp: '2024-01-29T10:30:00Z',
+    },
+    {
+      id: '2',
+      userId: '3',
+      userName: 'Pierre Martin',
+      userAvatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=2',
+      content: 'Oui, je peux les partager. Je les uploaderai dans la bibliothèque.',
+      timestamp: '2024-01-29T10:35:00Z',
+    },
+    {
+      id: '3',
+      userId: '4',
+      userName: 'Sophie Laurent',
+      userAvatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=2',
+      content: 'N\'oubliez pas que le projet de base de données est à rendre vendredi !',
+      timestamp: '2024-01-29T11:00:00Z',
+      isPinned: true
+    }
+  ]);
   const [newMessage, setNewMessage] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Charger les messages au montage
-  useEffect(() => {
-    const loadMessages = async () => {
-      if (user && user.promotion) {
-        try {
-          const data = await fetchChatMessages(user.promotion);
-          setMessages(data);
-        } catch (error) {
-          console.error('Error loading messages:', error);
-        }
-      }
-    };
-    loadMessages();
-  }, [user]);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -33,17 +53,21 @@ const NotificationsSection: React.FC = () => {
     scrollToBottom();
   }, [messages]);
 
-  const handleSendMessage = async (e: React.FormEvent) => {
+  const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
 
-    try {
-      const message = await sendChatMessage(user!.id, user!.promotion!, newMessage);
-      setMessages(prev => [...prev, message]);
-      setNewMessage('');
-    } catch (error) {
-      console.error('Error sending message:', error);
-    }
+    const message: Message = {
+      id: Date.now().toString(),
+      userId: user!.id,
+      userName: user!.name,
+      userAvatar: user!.avatar || 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=2',
+      content: newMessage,
+      timestamp: new Date().toISOString(),
+    };
+
+    setMessages(prev => [...prev, message]);
+    setNewMessage('');
   };
 
   const formatTime = (timestamp: string) => {
@@ -57,8 +81,8 @@ const NotificationsSection: React.FC = () => {
     return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
   };
 
-  const pinnedMessages = messages.filter(msg => msg.is_pinned);
-  const regularMessages = messages.filter(msg => !msg.is_pinned);
+  const pinnedMessages = messages.filter(msg => msg.isPinned);
+  const regularMessages = messages.filter(msg => !msg.isPinned);
 
   return (
     <div className="h-full flex flex-col">
@@ -81,7 +105,7 @@ const NotificationsSection: React.FC = () => {
           </div>
           {pinnedMessages.map((message) => (
             <div key={message.id} className="text-sm text-yellow-700">
-              <strong>{message.user?.full_name}:</strong> {message.content}
+              <strong>{message.userName}:</strong> {message.content}
             </div>
           ))}
         </div>
@@ -93,21 +117,21 @@ const NotificationsSection: React.FC = () => {
           {regularMessages.map((message) => (
             <div
               key={message.id}
-              className={`flex ${message.user_id === user?.id ? 'justify-end' : 'justify-start'}`}
+              className={`flex ${message.userId === user?.id ? 'justify-end' : 'justify-start'}`}
             >
-              <div className={`flex max-w-xs lg:max-w-md ${message.user_id === user?.id ? 'flex-row-reverse' : 'flex-row'}`}>
+              <div className={`flex max-w-xs lg:max-w-md ${message.userId === user?.id ? 'flex-row-reverse' : 'flex-row'}`}>
                 <img
-                  src={message.user?.avatar_url || 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=2'}
-                  alt={message.user?.full_name}
+                  src={message.userAvatar}
+                  alt={message.userName}
                   className="w-8 h-8 rounded-full object-cover"
                 />
-                <div className={`mx-2 ${message.user_id === user?.id ? 'text-right' : 'text-left'}`}>
+                <div className={`mx-2 ${message.userId === user?.id ? 'text-right' : 'text-left'}`}>
                   <div className="text-xs text-gray-500 mb-1">
-                    {message.user?.full_name} • {formatTime(message.created_at)}
+                    {message.userName} • {formatTime(message.timestamp)}
                   </div>
                   <div
                     className={`px-4 py-2 rounded-lg ${
-                      message.user_id === user?.id
+                      message.userId === user?.id
                         ? 'bg-blue-600 text-white'
                         : 'bg-gray-100 text-gray-900'
                     }`}

@@ -1,27 +1,27 @@
 import React, { useState } from 'react';
 import { BookOpen, TrendingUp, TrendingDown, BarChart3, Filter } from 'lucide-react';
-import type { Grade } from '../lib/supabase';
+import { Note } from '../services/api';
 
 interface NotesSectionProps {
-  grades: Grade[];
+  notes: Note[];
 }
 
-const NotesSection: React.FC<NotesSectionProps> = ({ grades }) => {
+const NotesSection: React.FC<NotesSectionProps> = ({ notes }) => {
   const [selectedFilter, setSelectedFilter] = useState<'all' | 'examen' | 'controle' | 'tp'>('all');
 
   const filteredNotes = selectedFilter === 'all' 
-    ? grades 
-    : grades.filter(grade => grade.grade_type === selectedFilter);
+    ? notes 
+    : notes.filter(note => note.type === selectedFilter);
 
   const calculateStats = () => {
-    if (grades.length === 0) return { average: 0, min: 0, max: 0 };
+    if (notes.length === 0) return { average: 0, min: 0, max: 0 };
     
-    const totalPoints = grades.reduce((sum, grade) => sum + (grade.value * grade.coefficient), 0);
-    const totalCoefficients = grades.reduce((sum, grade) => sum + grade.coefficient, 0);
+    const totalPoints = notes.reduce((sum, note) => sum + (note.valeur * note.coefficient), 0);
+    const totalCoefficients = notes.reduce((sum, note) => sum + note.coefficient, 0);
     const average = totalPoints / totalCoefficients;
     
-    const min = Math.min(...grades.map(grade => grade.value));
-    const max = Math.max(...grades.map(grade => grade.value));
+    const min = Math.min(...notes.map(note => note.valeur));
+    const max = Math.max(...notes.map(note => note.valeur));
     
     return { average, min, max };
   };
@@ -110,16 +110,16 @@ const NotesSection: React.FC<NotesSectionProps> = ({ grades }) => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6">
-          {filteredNotes.map((grade) => (
+          {filteredNotes.map((note) => (
             <div
-              key={grade.id}
-              className={`border-2 rounded-xl p-6 transition-all hover:shadow-md ${getGradeColor(grade.value)}`}
+              key={note.id}
+              className={`border-2 rounded-xl p-6 transition-all hover:shadow-md ${getGradeColor(note.valeur)}`}
             >
               <div className="flex items-start justify-between mb-3">
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">{grade.course?.name}</h3>
+                  <h3 className="font-semibold text-gray-900 mb-1">{note.cours}</h3>
                   <p className="text-sm text-gray-600">
-                    {new Date(grade.date_obtained).toLocaleDateString('fr-FR', {
+                    {new Date(note.date).toLocaleDateString('fr-FR', {
                       day: 'numeric',
                       month: 'long',
                       year: 'numeric'
@@ -131,19 +131,19 @@ const NotesSection: React.FC<NotesSectionProps> = ({ grades }) => {
 
               <div className="flex items-end justify-between">
                 <div>
-                  <p className={`text-3xl font-bold ${getGradeTextColor(grade.value)}`}>
-                    {grade.value}
+                  <p className={`text-3xl font-bold ${getGradeTextColor(note.valeur)}`}>
+                    {note.valeur}
                     <span className="text-lg text-gray-500">/20</span>
                   </p>
-                  <p className="text-sm text-gray-600">Coeff. {grade.coefficient}</p>
+                  <p className="text-sm text-gray-600">Coeff. {note.coefficient}</p>
                 </div>
                 
                 <span className={`px-2 py-1 rounded-lg text-xs font-medium ${
-                  grade.grade_type === 'examen' ? 'bg-red-100 text-red-800' :
-                  grade.grade_type === 'controle' ? 'bg-blue-100 text-blue-800' :
+                  note.type === 'examen' ? 'bg-red-100 text-red-800' :
+                  note.type === 'controle' ? 'bg-blue-100 text-blue-800' :
                   'bg-purple-100 text-purple-800'
                 }`}>
-                  {grade.grade_type.toUpperCase()}
+                  {note.type.toUpperCase()}
                 </span>
               </div>
             </div>

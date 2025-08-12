@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { MessageSquare, Send, AlertCircle, CheckCircle, Clock, Plus } from 'lucide-react';
-import { createRequest, fetchStudentRequests } from '../../services/supabaseApi';
-import type { Request } from '../../lib/supabase';
+import { submitRequest } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
 
 const RequestsSection: React.FC = () => {
-  const { user } = useAuth();
-  const [requests, setRequests] = useState<Request[]>([]);
+  const { token } = useAuth();
   const [showNewRequest, setShowNewRequest] = useState(false);
   const [requestType, setRequestType] = useState('note_error');
   const [subject, setSubject] = useState('');
@@ -14,20 +12,6 @@ const RequestsSection: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
-  // Charger les demandes au montage du composant
-  React.useEffect(() => {
-    const loadRequests = async () => {
-      if (user) {
-        try {
-          const data = await fetchStudentRequests(user.id);
-          setRequests(data);
-        } catch (error) {
-          console.error('Error loading requests:', error);
-        }
-      }
-    };
-    loadRequests();
-  }, [user]);
   const requestTypes = [
     { value: 'note_error', label: 'Erreur de note', icon: AlertCircle },
     { value: 'schedule_conflict', label: 'Conflit d\'emploi du temps', icon: Clock },
@@ -35,14 +19,33 @@ const RequestsSection: React.FC = () => {
     { value: 'other', label: 'Autre demande', icon: MessageSquare },
   ];
 
+  const mockRequests = [
+    {
+      id: '1',
+      type: 'note_error',
+      subject: 'Erreur dans la note d\'algorithmique',
+      description: 'Ma note d\'examen d\'algorithmique semble incorrecte.',
+      status: 'pending',
+      createdAt: '2024-01-28T09:00:00Z',
+      adminResponse: null
+    },
+    {
+      id: '2',
+      type: 'schedule_conflict',
+      subject: 'Conflit entre deux cours',
+      description: 'J\'ai deux cours programmés en même temps le mardi.',
+      status: 'resolved',
+      createdAt: '2024-01-25T14:30:00Z',
+      adminResponse: 'Le conflit a été résolu. Votre emploi du temps a été mis à jour.'
+    }
+  ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
-      const newRequest = await createRequest(user!.id, requestType, subject, description);
-      setRequests(prev => [newRequest, ...prev]);
+      await submitRequest(requestType, subject, description, token!);
       setSubmitSuccess(true);
       setSubject('');
       setDescription('');
@@ -185,7 +188,7 @@ const RequestsSection: React.FC = () => {
       <div className="space-y-4">
         <h2 className="text-xl font-semibold text-gray-900">Historique des Demandes</h2>
         
-        {requests.map((request) => {
+        {mockRequests.map((request) => {
           const RequestIcon = requestTypes.find(t => t.value === request.type)?.icon || MessageSquare;
           
           return (
@@ -196,7 +199,7 @@ const RequestsSection: React.FC = () => {
                   <div>
                     <h3 className="font-semibold text-gray-900">{request.subject}</h3>
                     <p className="text-sm text-gray-500">
-                      {new Date(request.created_at).toLocaleDateString('fr-FR', {
+                      {new Date(request.createdAt).toLocaleDateString('fr-FR', {
                         day: 'numeric',
                         month: 'long',
                         year: 'numeric',
@@ -214,10 +217,10 @@ const RequestsSection: React.FC = () => {
 
               <p className="text-gray-700 mb-4">{request.description}</p>
 
-              {request.admin_response && (
+              {request.adminResponse && (
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                   <h4 className="font-medium text-green-900 mb-2">Réponse de l'administration:</h4>
-                  <p className="text-green-800">{request.admin_response}</p>
+                  <p className="text-green-800">{request.adminResponse}</p>
                 </div>
               )}
             </div>
