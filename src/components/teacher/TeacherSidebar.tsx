@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, FileText, BookOpen, Users, Settings, LogOut, User, X } from 'lucide-react';
+import { Home, FileText, BookOpen, Users, Settings, LogOut, User, X, MessageSquare } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
 interface TeacherSidebarProps {
@@ -16,6 +16,7 @@ const TeacherSidebar: React.FC<TeacherSidebarProps> = ({ activeSection, setActiv
     { id: 'dashboard', label: 'Tableau de bord', icon: Home },
     { id: 'assignments', label: 'Gestion des Devoirs', icon: FileText },
     { id: 'grading', label: 'Correction', icon: BookOpen },
+    { id: 'bulletin', label: 'Babillard', icon: MessageSquare },
     { id: 'students', label: 'Étudiants', icon: Users },
     { id: 'profile', label: 'Profil', icon: User },
     { id: 'settings', label: 'Paramètres', icon: Settings },

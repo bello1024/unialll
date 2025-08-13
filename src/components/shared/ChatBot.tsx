@@ -58,6 +58,10 @@ const ChatBot: React.FC = () => {
       return 'Vous pouvez discuter avec vos camarades de classe dans la section "Notifications" qui contient le chat de groupe de votre promotion.';
     }
     
+    if (message.includes('babillard') || message.includes('annonce') || message.includes('résultat') || message.includes('publication')) {
+      return 'Consultez le "Babillard Numérique" pour voir toutes les annonces, résultats d\'examens et événements publiés par vos enseignants et l\'administration.';
+    }
+    
     if (message.includes('demande') || message.includes('contact') || message.includes('enseignant') || message.includes('administration')) {
       return 'Pour contacter l\'administration ou signaler un problème, utilisez la section "Mes Demandes". Vous pouvez y soumettre différents types de demandes : erreurs de notes, conflits d\'emploi du temps, problèmes techniques, etc.';
     }

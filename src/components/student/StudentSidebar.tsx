@@ -18,6 +18,7 @@ const StudentSidebar: React.FC<StudentSidebarProps> = ({ activeSection, setActiv
     { id: 'schedule', label: 'Emploi du temps', icon: Calendar },
     { id: 'assignments', label: 'Devoirs', icon: FileText },
     { id: 'notifications', label: 'Notifications', icon: Bell },
+    { id: 'bulletin', label: 'Babillard', icon: MessageSquare },
     { id: 'library', label: 'Bibliothèque', icon: Library },
     { id: 'certifications', label: 'Certifications', icon: Award },
     { id: 'requests', label: 'Mes Demandes', icon: MessageSquare },

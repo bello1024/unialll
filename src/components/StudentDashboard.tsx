@@ -7,6 +7,7 @@ import NotesSection from './NotesSection';
 import ScheduleSection from './ScheduleSection';
 import AssignmentsSection from './student/AssignmentsSection';
 import NotificationsSection from './student/NotificationsSection';
+import BulletinBoard from './student/BulletinBoard';
 import LibrarySection from './student/LibrarySection';
 import CertificationsSection from './student/CertificationsSection';
 import RequestsSection from './student/RequestsSection';
@@ -60,6 +61,8 @@ const StudentDashboard: React.FC = () => {
         return <ScheduleSection schedule={schedule} />;
       case 'assignments':
         return <AssignmentsSection />;
+      case 'bulletin':
+        return <BulletinBoard />;
       case 'requests':
         return <RequestsSection />;
       case 'notifications':
