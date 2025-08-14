@@ -19,6 +19,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeSection, setActiveSec
     { id: 'analytics', label: 'Analyses', icon: BarChart3 },
     { id: 'profile', label: 'Profil', icon: User },
     { id: 'settings', label: 'Paramètres', icon: Settings },
+  ];
 
   return (
     <>
