@@ -12,6 +12,7 @@ import LibrarySection from './student/LibrarySection';
 import CertificationsSection from './student/CertificationsSection';
 import RequestsSection from './student/RequestsSection';
 import ChatBot from './shared/ChatBot';
+import ProfileSection from './shared/ProfileSection';
 import { Loader2, Menu } from 'lucide-react';
 
 const StudentDashboard: React.FC = () => {
@@ -71,19 +72,12 @@ const StudentDashboard: React.FC = () => {
         return <LibrarySection />;
       case 'certifications':
         return <CertificationsSection />;
-      case 'requests':
-        return <RequestsSection />;
+      case 'profile':
+        return <ProfileSection />;
       case 'stats':
         return (
           <div className="text-center py-16">
             <h2 className="text-2xl font-semibold mb-4">Statistiques détaillées</h2>
-            <p className="text-gray-600">Cette section sera bientôt disponible.</p>
-          </div>
-        );
-      case 'profile':
-        return (
-          <div className="text-center py-16">
-            <h2 className="text-2xl font-semibold mb-4">Mon Profil</h2>
             <p className="text-gray-600">Cette section sera bientôt disponible.</p>
           </div>
         );

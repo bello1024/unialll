@@ -7,6 +7,7 @@ import AssignmentManagement from './AssignmentManagement';
 import GradingSection from './GradingSection';
 import BulletinManagement from './BulletinManagement';
 import ChatBot from '../shared/ChatBot';
+import ProfileSection from '../shared/ProfileSection';
 import { Loader2, Menu } from 'lucide-react';
 
 const TeacherDashboard: React.FC = () => {
@@ -59,6 +60,8 @@ const TeacherDashboard: React.FC = () => {
         return <GradingSection assignments={assignments} />;
       case 'bulletin':
         return <BulletinManagement />;
+      case 'profile':
+        return <ProfileSection />;
       default:
         return <TeacherOverview assignments={assignments} submissions={submissions} />;
     }

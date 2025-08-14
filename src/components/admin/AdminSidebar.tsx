@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Users, MessageSquare, BarChart3, Settings, LogOut, Shield, X } from 'lucide-react';
+import { Home, Users, MessageSquare, BarChart3, Settings, LogOut, Shield, X, User } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
 interface AdminSidebarProps {
@@ -17,8 +17,8 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeSection, setActiveSec
     { id: 'users', label: 'Gestion Utilisateurs', icon: Users },
     { id: 'requests', label: 'Demandes Étudiants', icon: MessageSquare },
     { id: 'analytics', label: 'Analyses', icon: BarChart3 },
+    { id: 'profile', label: 'Profil', icon: User },
     { id: 'settings', label: 'Paramètres', icon: Settings },
-  ];
 
   return (
     <>

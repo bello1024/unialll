@@ -6,6 +6,7 @@ import AdminOverview from './AdminOverview';
 import UserManagement from './UserManagement';
 import RequestManagement from './RequestManagement';
 import ChatBot from '../shared/ChatBot';
+import ProfileSection from '../shared/ProfileSection';
 import { Loader2, Menu } from 'lucide-react';
 
 const AdminDashboard: React.FC = () => {
@@ -53,6 +54,8 @@ const AdminDashboard: React.FC = () => {
         return <UserManagement users={users} setUsers={setUsers} />;
       case 'requests':
         return <RequestManagement requests={requests} setRequests={setRequests} />;
+      case 'profile':
+        return <ProfileSection />;
       default:
         return <AdminOverview users={users} requests={requests} />;
     }
