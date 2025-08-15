@@ -18,8 +18,7 @@ const TeacherSidebar: React.FC<TeacherSidebarProps> = ({ activeSection, setActiv
     { id: 'grading', label: 'Correction', icon: BookOpen },
     { id: 'bulletin', label: 'Babillard', icon: MessageSquare },
     { id: 'students', label: 'Étudiants', icon: Users },
-    { id: 'profile', label: 'Profil', icon: User },
-    { id: 'profile', label: 'Profil', icon: User },
+    { id: 'profile', label: 'Profil', icon: User },  
   ];
 
   return (
