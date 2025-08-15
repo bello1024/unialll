@@ -85,6 +85,7 @@ const AdminDashboard: React.FC = () => {
         </div>
       </main>
       <ChatBot />
+      <ChatBot onNavigate={setActiveSection} currentSection={activeSection} />
     </div>
   );
 };
