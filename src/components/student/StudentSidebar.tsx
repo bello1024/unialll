@@ -56,7 +56,7 @@ const StudentSidebar: React.FC<StudentSidebarProps> = ({ activeSection, setActiv
         <div className="p-6 border-b border-gray-200 flex-shrink-0">
         <div className="flex items-center space-x-3">
           <img
-            src={user?.avatar || 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=2'}
+            src={user?.avatar || 'public/profile.jpg'}
             alt="Avatar"
             className="w-12 h-12 rounded-full object-cover"
           />
