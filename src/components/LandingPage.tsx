@@ -134,7 +134,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onViewCertifications
                 <GraduationCap className="h-8 w-8 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Sup'Ptic</h1>
+                <h1 className="text-xl font-bold text-gray-900">SUP'PTIC</h1>
                 <p className="text-xs text-gray-600">Excellence en formation</p>
               </div>
             </div>
@@ -213,10 +213,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onViewCertifications
               <div>
                 <h1 className="text-4xl lg:text-6xl font-bold leading-tight mb-6">
                   Votre avenir commence à
-                  <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent"> Sup'Ptic</span>
+                  <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent"> SUP'PTIC</span>
                 </h1>
                 <p className="text-xl text-blue-100 leading-relaxed">
-                  École supérieure d'excellence en informatique et technologies. 
+                  École Nationale supérieure des postes des télécommunications et des TIC. 
                   Formez-vous aux métiers d'avenir avec nos certifications reconnues par l'industrie.
                 </p>
               </div>
@@ -254,7 +254,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onViewCertifications
 
             <div className="relative">
               <img
-                src="https://images.pexels.com/photos/1181533/pexels-photo-1181533.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&dpr=2"
+                src="public/WhatsApp-Image-2025-08-06-a-09.41.08_39d9c456.jpg"
                 alt="Campus Sup'Ptic"
                 className="rounded-2xl shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500"
               />
