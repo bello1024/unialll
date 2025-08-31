@@ -13,8 +13,14 @@ import {
   Shield,
   Zap,
   Menu,
-  X
+  X,
+  LogIn,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff
 } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 interface LandingPageProps {
   onLogin: () => void;
@@ -38,7 +44,73 @@ interface Certification {
 
 const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onViewCertifications }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [accountType, setAccountType] = useState<'student' | 'teacher' | 'admin'>('student');
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const { login } = useAuth();
 
+  const accountTypes = [
+    { 
+      value: 'student', 
+      label: 'Étudiant', 
+      icon: '🎓',
+      email: 'student@example.com',
+      description: 'Accès aux notes, emploi du temps et devoirs'
+    },
+    { 
+      value: 'teacher', 
+      label: 'Enseignant', 
+      icon: '👨‍🏫',
+      email: 'teacher@example.com',
+      description: 'Gestion des cours et correction des devoirs'
+    },
+    { 
+      value: 'admin', 
+      label: 'Administrateur', 
+      icon: '⚙️',
+      email: 'admin@example.com',
+      description: 'Gestion des utilisateurs et du système'
+    }
+  ];
+
+  const handleAccountTypeChange = (type: 'student' | 'teacher' | 'admin') => {
+    setAccountType(type);
+    const selectedAccount = accountTypes.find(acc => acc.value === type);
+    if (selectedAccount) {
+      setEmail(selectedAccount.email);
+    }
+  };
+
+  const handleLoginSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setIsLoading(true);
+
+    try {
+      const success = await login(email, password);
+      if (success) {
+        setShowLoginModal(false);
+        // L'utilisateur sera automatiquement redirigé vers son dashboard
+      } else {
+        setError('Email ou mot de passe incorrect');
+      }
+    } catch (err) {
+      setError('Une erreur est survenue lors de la connexion');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const openLoginModal = () => {
+    setShowLoginModal(true);
+    setEmail(accountTypes[0].email);
+    setPassword('');
+    setError('');
+  };
   const certifications: Certification[] = [
     {
       id: '1',
@@ -157,7 +229,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onViewCertifications
                 Contact
               </a>
               <button
-                onClick={onLogin}
+                onClick={openLoginModal}
                 className="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
               >
                 Se connecter
@@ -194,7 +266,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onViewCertifications
                 Contact
               </a>
               <button
-                onClick={onLogin}
+                onClick={openLoginModal}
                 className="block w-full text-left px-4 py-2 bg-blue-600 text-white rounded-lg font-medium"
               >
                 Se connecter
@@ -230,7 +302,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onViewCertifications
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </button>
                 <button
-                  onClick={onLogin}
+                  onClick={openLoginModal}
                   className="border-2 border-white text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white hover:text-blue-900 transition-all duration-300"
                 >
                   Espace étudiant
@@ -513,7 +585,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onViewCertifications
               Explorer les certifications
             </button>
             <button
-              onClick={onLogin}
+              onClick={openLoginModal}
               className="border-2 border-white text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white hover:text-blue-600 transition-all duration-300"
             >
               Accéder à mon compte
@@ -579,8 +651,173 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onViewCertifications
           </div>
         </div>
       </footer>
+
+      {/* Modal de connexion */}
+      {showLoginModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 animate-fadeIn">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto animate-slideUp">
+            {/* Header du modal */}
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <div className="flex items-center space-x-3">
+                <div className="bg-blue-600 p-2 rounded-lg">
+                  <LogIn className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900">Connexion</h2>
+                  <p className="text-sm text-gray-600">Accédez à votre espace personnel</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowLoginModal(false)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <X className="h-5 w-5 text-gray-600" />
+              </button>
+            </div>
+
+            {/* Contenu du modal */}
+            <div className="p-6">
+              {/* Sélection du type de compte */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  Type de compte
+                </label>
+                <div className="grid grid-cols-1 gap-3">
+                  {accountTypes.map((type) => (
+                    <button
+                      key={type.value}
+                      type="button"
+                      onClick={() => handleAccountTypeChange(type.value as any)}
+                      className={`p-3 rounded-lg border-2 text-left transition-all hover:shadow-sm ${
+                        accountType === type.value
+                          ? 'border-blue-500 bg-blue-50'
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <span className="text-xl">{type.icon}</span>
+                        <div>
+                          <p className={`font-medium ${
+                            accountType === type.value ? 'text-blue-900' : 'text-gray-900'
+                          }`}>
+                            {type.label}
+                          </p>
+                          <p className={`text-xs ${
+                            accountType === type.value ? 'text-blue-700' : 'text-gray-600'
+                          }`}>
+                            {type.description}
+                          </p>
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <form onSubmit={handleLoginSubmit} className="space-y-4">
+                <div>
+                  <label htmlFor="modal-email" className="block text-sm font-medium text-gray-700 mb-2">
+                    Email
+                  </label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <input
+                      id="modal-email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                      placeholder="votre.email@example.com"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="modal-password" className="block text-sm font-medium text-gray-700 mb-2">
+                    Mot de passe
+                  </label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <input
+                      id="modal-password"
+                      type={showPassword ? 'text' : 'password'}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                      placeholder="••••••••"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    >
+                      {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                    </button>
+                  </div>
+                </div>
+
+                {error && (
+                  <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                    {error}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-[1.02]"
+                >
+                  {isLoading ? 'Connexion...' : 'Se connecter'}
+                </button>
+              </form>
+
+              <div className="mt-4 text-center">
+                <p className="text-sm text-gray-600">
+                  Mot de passe pour tous les comptes: <span className="font-mono font-bold">password</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
+
+// Styles CSS pour les animations
+const styles = `
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes slideUp {
+    from { 
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+    }
+    to { 
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+  
+  .animate-fadeIn {
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  .animate-slideUp {
+    animation: slideUp 0.3s ease-out;
+  }
+`;
+
+// Injecter les styles dans le document
+if (typeof document !== 'undefined') {
+  const styleSheet = document.createElement('style');
+  styleSheet.textContent = styles;
+  document.head.appendChild(styleSheet);
+}
 
 export default LandingPage;

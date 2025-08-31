@@ -23,7 +23,12 @@ const AppContent: React.FC = () => {
       case 'admin':
         return <AdminDashboard />;
       default:
-        return <LoginForm />;
+        return (
+          <LandingPage 
+            onLogin={() => setCurrentView('login')}
+            onViewCertifications={() => setCurrentView('certifications')}
+          />
+        );
     }
   }
 
@@ -32,7 +37,7 @@ const AppContent: React.FC = () => {
     case 'landing':
       return (
         <LandingPage 
-          onLogin={() => setCurrentView('login')}
+          onLogin={() => {}} // Fonction vide car le modal est géré dans LandingPage
           onViewCertifications={() => setCurrentView('certifications')}
         />
       );
@@ -40,15 +45,20 @@ const AppContent: React.FC = () => {
       return (
         <CertificationStore 
           onBack={() => setCurrentView('landing')}
-          onLogin={() => setCurrentView('login')}
+          onLogin={() => setCurrentView('landing')} // Retour à l'accueil pour utiliser le modal
         />
       );
     case 'login':
-      return <LoginForm />;
+      return (
+        <LandingPage 
+          onLogin={() => {}}
+          onViewCertifications={() => setCurrentView('certifications')}
+        />
+      );
     default:
       return (
         <LandingPage 
-          onLogin={() => setCurrentView('login')}
+          onLogin={() => {}}
           onViewCertifications={() => setCurrentView('certifications')}
         />
       );
