@@ -135,7 +135,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onViewCertifications
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-900">SUP'PTIC</h1>
-                <p className="text-xs text-gray-600">Excellence en formation</p>
+                <p className="text-xs text-gray-600">Excellence et Qualité </p>
               </div>
             </div>
 
