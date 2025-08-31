@@ -456,10 +456,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onViewCertifications
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
               <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
-                À propos de Sup'Ptic
+                À propos de Sup'ptic
               </h2>
               <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-                Depuis plus de 15 ans, Sup'Ptic forme les talents de demain dans le domaine 
+                Depuis 1969, Sup'ptic forme les talents de demain dans le domaine 
                 des technologies de l'information. Notre approche pédagogique innovante combine 
                 théorie et pratique pour préparer nos étudiants aux défis du monde professionnel.
               </p>
@@ -487,7 +487,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onViewCertifications
               />
               <div className="absolute -bottom-8 -right-8 bg-blue-600 text-white p-6 rounded-2xl shadow-lg">
                 <div className="text-center">
-                  <div className="text-3xl font-bold">15+</div>
+                  <div className="text-3xl font-bold">55+</div>
                   <div className="text-sm">Années d'expérience</div>
                 </div>
               </div>
@@ -503,7 +503,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onViewCertifications
             Prêt à transformer votre carrière ?
           </h2>
           <p className="text-xl text-blue-100 mb-8">
-            Rejoignez des milliers d'étudiants qui ont choisi l'excellence avec Sup'Ptic
+            Rejoignez des milliers d'étudiants qui ont choisi l'excellence avec Sup'ptic
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
@@ -532,8 +532,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onViewCertifications
                   <GraduationCap className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold">Sup'Ptic</h3>
-                  <p className="text-sm text-gray-400">École Supérieure Polytechnique des TIC</p>
+                  <h3 className="text-xl font-bold">Sup'ptic</h3>
+                  <p className="text-sm text-gray-400">École Nationale Supérieure de postes, des télécoms et TIC</p>
                 </div>
               </div>
               <p className="text-gray-400 mb-4 leading-relaxed">
@@ -569,13 +569,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onViewCertifications
                 <li>📍 Yaoundé, Cameroun</li>
                 <li>📞 +237 6XX XXX XXX</li>
                 <li>✉️ contact@supptic.cm</li>
-                <li>🌐 www.supptic.cm</li>
+                <li>🌐 www.e-supptic.cm</li>
               </ul>
             </div>
           </div>
 
           <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 Sup'Ptic. Tous droits réservés.</p>
+            <p>&copy; 2024 Sup'ptic. Tous droits réservés.</p>
           </div>
         </div>
       </footer>
