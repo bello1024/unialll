@@ -75,7 +75,7 @@ const LoginForm: React.FC = () => {
           <div className="bg-white p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
             <LogIn className="h-8 w-8 text-blue-600" />
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">Portail Étudiant</h1>
+          <h1 className="text-3xl font-bold text-white mb-2"></h1>
           <p className="text-blue-200">Connectez-vous pour accéder à vos données</p>
         </div>
 
