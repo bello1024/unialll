@@ -72,8 +72,12 @@ const LoginForm: React.FC = () => {
       <div className="max-w-md w-full">
         {/* Logo et titre */}
         <div className="text-center mb-8">
-          <div className="bg-white p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-            <LogIn className="h-8 w-8 text-blue-600" />
+          <div className="bg-white p-4 rounded-2xl w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
+            <img
+              src="/logo.png"
+              alt="Sup'Ptic Logo"
+              className="h-12 w-auto"
+            />
           </div>
           <h1 className="text-3xl font-bold text-white mb-2"></h1>
           <p className="text-blue-200">Connectez-vous pour accéder à vos données</p>

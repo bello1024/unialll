@@ -54,6 +54,13 @@ const StudentSidebar: React.FC<StudentSidebarProps> = ({ activeSection, setActiv
 
       {/* Header avec profil utilisateur */}
         <div className="p-6 border-b border-gray-200 flex-shrink-0">
+        <div className="flex justify-center mb-4">
+          <img
+            src="/logo.png"
+            alt="Sup'Ptic Logo"
+            className="h-10 w-auto"
+          />
+        </div>
         <div className="flex items-center space-x-3">
           <img
             src={user?.avatar || 'public/profile.jpg'}

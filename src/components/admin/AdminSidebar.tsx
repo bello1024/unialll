@@ -47,6 +47,13 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeSection, setActiveSec
 
       {/* Header avec profil utilisateur */}
         <div className="p-6 border-b border-gray-200 flex-shrink-0">
+        <div className="flex justify-center mb-4">
+          <img
+            src="/logo.png"
+            alt="Sup'Ptic Logo"
+            className="h-10 w-auto"
+          />
+        </div>
         <div className="flex items-center space-x-3">
           <img
             src={user?.avatar || 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=2'}
