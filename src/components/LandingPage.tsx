@@ -326,7 +326,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onViewCertifications
 
             <div className="relative">
               <img
-                src="public/WhatsApp-Image-2025-08-06-a-09.41.08_39d9c456.jpg"
+                src="https://stackblitz.com/storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBCT2tBemdFPSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--9f82590cdddf122d644d13cef7df1329d7f093d3/-WhatsApp-Image-2025-08-06-a-09.41.08_39d9c456.jpg"
                 alt="Campus Sup'Ptic"
                 className="rounded-2xl shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500"
               />
