@@ -157,7 +157,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onViewCertifications
   ];
 
   const stats = [
-    { number: '10000+', label: 'Étudiants formés', icon: Users },
+    { number: '5000+', label: 'Étudiants formés', icon: Users },
     { number: '50+', label: 'Certifications', icon: Award },
     { number: '95%', label: 'Taux de réussite', icon: TrendingUp },
     { number: '4.8/5', label: 'Satisfaction', icon: Star }
@@ -202,11 +202,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onViewCertifications
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
-              <img
-                src="/logo.png"
-                alt="Sup'Ptic Logo"
-                className="h-12 w-auto"
-              />
+              <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-2 rounded-lg">
+                <GraduationCap className="h-8 w-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-gray-900">SUP'PTIC</h1>
+                <p className="text-xs text-gray-600">Excellence et Qualité </p>
+              </div>
             </div>
 
             {/* Menu desktop */}
@@ -402,7 +404,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onViewCertifications
 
             <div className="relative group overflow-hidden rounded-2xl">
               <img
-                src="https://images.pexels.com/photos/1181533/pexels-photo-1181533.jpeg?auto=compress&cs=tinysrgb&w=500&h=300&dpr=2"
+                src="public//Concours-dentree-a-SUPPTIC-ed-768x578.jpg?auto=compress&cs=tinysrgb&w=500&h=300&dpr=2"
                 alt="Salle de classe"
                 className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
               />
@@ -597,12 +599,15 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onViewCertifications
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
-              <img
-                src="/logo.png"
-                alt="Sup'Ptic Logo"
-                className="h-16 w-auto mb-4"
-              />
-              <p className="text-sm text-gray-400 mb-4">École Nationale Supérieure de postes, des télécoms et TIC</p>
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-2 rounded-lg">
+                  <GraduationCap className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold">Sup'ptic</h3>
+                  <p className="text-sm text-gray-400">École Nationale Supérieure de postes, des télécoms et TIC</p>
+                </div>
+              </div>
               <p className="text-gray-400 mb-4 leading-relaxed">
                 Formant les leaders technologiques de demain avec des programmes 
                 d'excellence et une approche pédagogique innovante.
