@@ -157,7 +157,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onViewCertifications
   ];
 
   const stats = [
-    { number: '5000+', label: 'Étudiants formés', icon: Users },
+    { number: '10000+', label: 'Étudiants formés', icon: Users },
     { number: '50+', label: 'Certifications', icon: Award },
     { number: '95%', label: 'Taux de réussite', icon: TrendingUp },
     { number: '4.8/5', label: 'Satisfaction', icon: Star }
@@ -206,7 +206,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onViewCertifications
                 <GraduationCap className="h-8 w-8 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">SUP'PTIC</h1>
+                <h1 className="text-xl font-bold text-gray-900">Uni&ALL</h1>
                 <p className="text-xs text-gray-600">Excellence et Qualité </p>
               </div>
             </div>
