@@ -98,7 +98,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ onNavigate, currentSection }) => {
       }
       if (message.includes('absence') || message.includes('présence') || message.includes('appel')) {
         return {
-          content: 'Je vous emmène vers vos absences ! 📅',
+          content: 'Je vous emmène vers la section Discipline ! 📅',
           action: { type: 'navigate', data: 'absences', label: 'Voir mes absences' }
         };
       }
@@ -131,7 +131,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ onNavigate, currentSection }) => {
             actions: [
               { label: 'Voir mes notes', section: 'notes' },
               { label: 'Emploi du temps', section: 'schedule' },
-              { label: 'Mes absences', section: 'absences' },
+              { label: 'Discipline', section: 'absences' },
               { label: 'Mes devoirs', section: 'assignments' },
               { label: 'Certifications', section: 'certifications' }
             ]

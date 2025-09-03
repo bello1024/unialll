@@ -161,42 +161,87 @@ export const fetchNotes = async (studentId: string): Promise<Note[]> => {
 export const fetchSchedule = async (identifier: string, token: string): Promise<ScheduleItem[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
+      const today = new Date().toISOString().split('T')[0];
       resolve([
         {
           id: '1',
-          date: '2025-01-14',
+          date: today,
+          cours: 'Algorithmique Avancée - Partie 1',
+          professeur: 'Prof. Martin Dubois',
+          salle: 'Salle A101',
+          heureDebut: '08:00',
+          heureFin: '10:00',
+          type: 'cours',
+          promotion: 'L3 RT'
+        },
+        {
+          id: '2',
+          date: today,
+          cours: 'Algorithmique Avancée - Partie 2',
+          professeur: 'Prof. Martin Dubois',
+          salle: 'Salle A101',
+          heureDebut: '10:15',
+          heureFin: '12:15',
+          type: 'cours',
+          promotion: 'L3 RT'
+        },
+        {
+          id: '3',
+          date: today,
+          cours: 'Base de Données - Partie 1',
+          professeur: 'Prof. Thomas Bernard',
+          salle: 'Lab B203',
+          heureDebut: '14:00',
+          heureFin: '16:00',
+          type: 'tp',
+          promotion: 'L3 RT'
+        },
+        {
+          id: '4',
+          date: today,
+          cours: 'Base de Données - Partie 2',
+          professeur: 'Prof. Thomas Bernard',
+          salle: 'Lab B203',
+          heureDebut: '16:15',
+          heureFin: '18:15',
+          type: 'tp',
+          promotion: 'L3 RT'
+        },
+        {
+          id: '5',
+          date: '2025-01-15',
           cours: 'Mathématiques Avancées',
           professeur: 'Prof. Martin',
           salle: 'Salle 101',
           heureDebut: '08:00',
           heureFin: '10:00',
           type: 'cours',
-          promotion: 'L3 Informatique'
+          promotion: 'L3 RT'
         },
         {
-          id: '2',
-          date: '2025-01-14',
+          id: '6',
+          date: '2025-01-15',
           cours: 'Travaux Dirigés Physique',
           professeur: 'Prof. Dubois',
           salle: 'Salle 203',
           heureDebut: '10:15',
           heureFin: '12:15',
           type: 'td',
-          promotion: 'L3 Informatique'
+          promotion: 'L3 RT'
         },
         {
-          id: '3',
-          date: '2025-01-15',
+          id: '7',
+          date: '2025-01-16',
           cours: 'Travaux Pratiques Informatique',
           professeur: 'Prof. Leroy',
           salle: 'Lab 301',
           heureDebut: '14:00',
           heureFin: '16:00',
           type: 'tp',
-          promotion: 'L3 Informatique'
+          promotion: 'L3 RT'
         },
         {
-          id: '4',
+          id: '8',
           date: '2025-01-16',
           cours: 'Algorithmique',
           professeur: 'Prof. Bernard',
@@ -204,7 +249,7 @@ export const fetchSchedule = async (identifier: string, token: string): Promise<
           heureDebut: '09:00',
           heureFin: '11:00',
           type: 'cours',
-          promotion: 'L3 Informatique'
+          promotion: 'L3 RT'
         }
       ]);
     }, 1000);
