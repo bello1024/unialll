@@ -414,3 +414,15 @@ export const fetchStudentAssignments = async (studentId: string): Promise<Assign
     }, 1000);
   });
 };
+
+// Fonction pour créer un devoir
+export const createAssignment = async (assignmentData: Omit<Assignment, 'id'>): Promise<Assignment> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        ...assignmentData,
+        id: Math.random().toString(36).substr(2, 9)
+      });
+    }, 1000);
+  });
+};
