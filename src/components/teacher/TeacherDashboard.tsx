@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { fetchTeacherAssignments, fetchSubmissions, Assignment, Submission } from '../../services/api';
+import { fetchSchedule, ScheduleItem } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
 import TeacherSidebar from './TeacherSidebar';
 import TeacherOverview from './TeacherOverview';
 import AssignmentManagement from './AssignmentManagement';
 import GradingSection from './GradingSection';
+import AttendanceSection from './AttendanceSection';
 import BulletinManagement from './BulletinManagement';
 import ChatBot from '../shared/ChatBot';
 import ProfileSection from '../shared/ProfileSection';
@@ -13,6 +15,7 @@ import { Loader2, Menu } from 'lucide-react';
 const TeacherDashboard: React.FC = () => {
   const { user, token, assignments: globalAssignments, setAssignments: setGlobalAssignments } = useAuth();
   const [assignments, setAssignments] = useState<Assignment[]>([]);
+  const [schedule, setSchedule] = useState<ScheduleItem[]>([]);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [activeSection, setActiveSection] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -24,7 +27,9 @@ const TeacherDashboard: React.FC = () => {
       setIsLoading(true);
       try {
         const assignmentsData = await fetchTeacherAssignments(user.id, token);
+        const scheduleData = await fetchSchedule(user.department || 'L3 RT', token);
         setAssignments(assignmentsData);
+        setSchedule(scheduleData);
         setGlobalAssignments(assignmentsData);
 
         // Charger les soumissions pour le premier devoir
@@ -58,6 +63,8 @@ const TeacherDashboard: React.FC = () => {
         return <AssignmentManagement assignments={assignments} setAssignments={setAssignments} />;
       case 'grading':
         return <GradingSection assignments={assignments} />;
+      case 'attendance':
+        return <AttendanceSection schedule={schedule} />;
       case 'bulletin':
         return <BulletinManagement />;
       case 'profile':

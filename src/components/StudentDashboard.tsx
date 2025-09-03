@@ -11,6 +11,7 @@ import BulletinBoard from './student/BulletinBoard';
 import LibrarySection from './student/LibrarySection';
 import CertificationsSection from './student/CertificationsSection';
 import RequestsSection from './student/RequestsSection';
+import AbsencesSection from './student/AbsencesSection';
 import ChatBot from './shared/ChatBot';
 import ProfileSection from './shared/ProfileSection';
 import { Loader2, Menu } from 'lucide-react';
@@ -60,6 +61,8 @@ const StudentDashboard: React.FC = () => {
         return <NotesSection notes={notes} />;
       case 'schedule':
         return <ScheduleSection schedule={schedule} />;
+      case 'absences':
+        return <AbsencesSection />;
       case 'assignments':
         return <AssignmentsSection />;
       case 'bulletin':

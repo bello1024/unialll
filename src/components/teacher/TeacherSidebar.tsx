@@ -16,6 +16,7 @@ const TeacherSidebar: React.FC<TeacherSidebarProps> = ({ activeSection, setActiv
     { id: 'dashboard', label: 'Tableau de bord', icon: Home },
     { id: 'assignments', label: 'Gestion des Devoirs', icon: FileText },
     { id: 'grading', label: 'Correction', icon: BookOpen },
+    { id: 'attendance', label: 'Présences', icon: Users },
     { id: 'bulletin', label: 'Babillard', icon: MessageSquare },
     { id: 'students', label: 'Étudiants', icon: Users },
     { id: 'profile', label: 'Profil', icon: User },  
