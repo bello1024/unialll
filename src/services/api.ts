@@ -27,11 +27,14 @@ export interface Note {
 
 export interface ScheduleItem {
   id: string;
-  time: string;
-  subject: string;
-  teacher: string;
-  room: string;
-  day: string;
+  date: string;
+  cours: string;
+  professeur: string;
+  salle: string;
+  heureDebut: string;
+  heureFin: string;
+  type: 'cours' | 'td' | 'tp';
+  promotion: string;
 }
 
 export interface UserAccount {
@@ -155,25 +158,53 @@ export const fetchNotes = async (studentId: string): Promise<Note[]> => {
 };
 
 // Fonction pour récupérer l'emploi du temps
-export const fetchSchedule = async (studentId: string): Promise<ScheduleItem[]> => {
+export const fetchSchedule = async (identifier: string, token: string): Promise<ScheduleItem[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve([
         {
           id: '1',
-          time: '08:00 - 10:00',
-          subject: 'Mathématiques',
-          teacher: 'Prof. Martin',
-          room: 'Salle 101',
-          day: 'Lundi'
+          date: '2025-01-14',
+          cours: 'Mathématiques Avancées',
+          professeur: 'Prof. Martin',
+          salle: 'Salle 101',
+          heureDebut: '08:00',
+          heureFin: '10:00',
+          type: 'cours',
+          promotion: 'L3 Informatique'
         },
         {
           id: '2',
-          time: '10:15 - 12:15',
-          subject: 'Physique',
-          teacher: 'Prof. Dubois',
-          room: 'Salle 203',
-          day: 'Lundi'
+          date: '2025-01-14',
+          cours: 'Travaux Dirigés Physique',
+          professeur: 'Prof. Dubois',
+          salle: 'Salle 203',
+          heureDebut: '10:15',
+          heureFin: '12:15',
+          type: 'td',
+          promotion: 'L3 Informatique'
+        },
+        {
+          id: '3',
+          date: '2025-01-15',
+          cours: 'Travaux Pratiques Informatique',
+          professeur: 'Prof. Leroy',
+          salle: 'Lab 301',
+          heureDebut: '14:00',
+          heureFin: '16:00',
+          type: 'tp',
+          promotion: 'L3 Informatique'
+        },
+        {
+          id: '4',
+          date: '2025-01-16',
+          cours: 'Algorithmique',
+          professeur: 'Prof. Bernard',
+          salle: 'Salle 105',
+          heureDebut: '09:00',
+          heureFin: '11:00',
+          type: 'cours',
+          promotion: 'L3 Informatique'
         }
       ]);
     }, 1000);
